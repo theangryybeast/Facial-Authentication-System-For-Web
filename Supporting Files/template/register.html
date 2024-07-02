@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Register</title>
+  <style>
+    /* General Styles */
+    body {
+      font-family: 'Roboto', Arial, sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 0;
+    }
+
+    /* Header Styles */
+    h1 {
+      text-align: center;
+      margin-top: 50px;
+      font-size: 36px;
+      color: #333;
+    }
+
+    /* Form Styles */
+    form {
+      max-width: 800px;
+      margin: 0 auto;
+      background-color: #fff;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 10px;
+      font-weight: bold;
+    }
+
+    input[type="email"] {
+      width: 100%;
+      padding: 12px 20px;
+      margin-bottom: 20px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+      font-size: 16px;
+    }
+
+    #video-container,
+    #captured-image-container {
+      width: 50%;
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    #canvas {
+      display: none;
+    }
+
+    #capture-btn {
+      background-color: #4CAF50;
+      color: white;
+      padding: 12px 20px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+      margin-top: 20px;
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    #capture-btn:hover {
+      background-color: #45a049;
+    }
+
+    #register-btn {
+      background-color: #007bff;
+      color: white;
+      padding: 12px 20px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+      margin: 20px auto 0 auto;
+      transition: background-color 0.3s ease;
+    }
+
+    #register-btn:hover {
+      background-color: #0056b3;
+    }
+
+    /* Additional Text Styles */
+    .text-container {
+      text-align: center;
+      margin-top: 30px;
+      color: #666;
+    }
+
+    .text-container p {
+      font-size: 18px;
+      line-height: 1.5;
+    }
+  </style>
+</head>
+<body>
+  <h1>Register</h1>
+  <form id="register-form" method="post" enctype="multipart/form-data">
+    <label for="email">Email:</label>
+    <input type="email" id="email" name="email" required>
+    <div id="video-container">
+      <video id="video" width="320" height="240" autoplay></video>
+      <canvas id="canvas" width="320" height="240"></canvas>
+    </div>
+    <div id="captured-image-container">
+      <img id="captured-image" src="" alt="Captured Image" width="320" height="240">
+    </div>
+    <button type="button" id="capture-btn">Capture Image</button>
+    <input type="hidden" id="image-data" name="image" value="">
+    <button type="submit" id="register-btn">Register</button>
+  </form>
+  <div class="text-container">
+    <p>To register, please fill out the form and capture an image using your webcam.</p>
+    <p>Your image will be securely stored and used for authentication purposes.</p>
+  </div>
+  <script>
+    // Get the video and canvas elements
+    const videoElement = document.getElementById('video');
+    const canvasElement = document.getElementById('canvas');
+    const capturedImageElement = document.getElementById('captured-image');
+    const captureButton = document.getElementById('capture-btn');
+    const imageDataInput = document.getElementById('image-data');
+
+    // Get the user's webcam stream
+    navigator.mediaDevices.getUserMedia({ video: true })
+      .then((stream) => {
+        videoElement.srcObject = stream;
+      })
+      .catch((error) => {
+        console.error('Error accessing webcam:', error);
+      });
+
+    // Capture the image when the button is clicked
+    captureButton.addEventListener('click', () => {
+      // Draw the current video frame onto the canvas
+      const context = canvasElement.getContext('2d');
+      context.drawImage(videoElement, 0, 0, canvasElement.width, canvasElement.height);
+
+      // Convert the canvas to a data URL and store it in the form input
+      imageDataInput.value = canvasElement.toDataURL('image/jpeg');
+
+      // Display the captured image
+      capturedImageElement.src = imageDataInput.value;
+    });
+  </script>
+</body>
+</html>
